@@ -41,7 +41,8 @@ The project issues are divided into 2 stages.
 ## 1. Descriptive Analysis
 There are **14337** reviews in the dataset. _Table 1_ shows that the mean of ReviewStar is near to
 **4(3.67)**, which indicates that most customers are content with the product.
-![](Table 1_ Initial Summary.png)
+
+![](Table1_InitialSummary.png)
 
 
 
