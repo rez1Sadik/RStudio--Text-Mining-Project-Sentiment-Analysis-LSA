@@ -52,8 +52,8 @@ The study shows the factors for consumer satisfaction are:
 4.  **Pricing:** According to the consumer, the product's price is reasonable given its qualities.
 
 ### Recommendations
--   _The PTron Intunes should resolve the technical problems and create a universally applicable design. 
--   _For the benefit of customers seeking a premium appearance, they may also bring another product under this name.
+-   The PTron Intunes should resolve the technical problems and create a universally applicable design. 
+-   For the benefit of customers seeking a premium appearance, they may also bring another product under this name.
 
 ***
 
