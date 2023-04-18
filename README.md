@@ -36,7 +36,28 @@ The project issues are divided into 2 stages.
     - N-grams
     - Weighted document-term matrix
     - Applied Latent Semantic Analysis (LSA)
+
+## Findings & Recommendations 
+### Findings
+The study shows the factors for consumer dissatisfaction are:
+1.  **Fittings & Tech issues:** The product is not the kind of product that will fit for everyone, and consumers have higher expectations in terms of technology (Bluetooth) support.
+2.  **Delivery Time:** Even while this might not directly relate to Ptron Intunes, it is having an impact on their clientele.
+3.  **Material Quality:** This is yet another source of dissatisfaction to consider. However, there are situations when offering excellent materials and designs at a low cost is difficult.
+
+
+The study shows the factors for consumer satisfaction are:
+1.  **Sound Quality:** The majority of good evaluations are due to how satisfied people are with the sound quality (super, impress, fantastic).
+2.  **Lightweight:** This brand of earphone is well-liked by its clientele because of how lightweight they are.
+3.  **Noise Cancellation and Battery life:** Both the noise canceling feature and the lengthy battery life are reasons why many favor this device. The fact that this product has a dedicated noise canceling button makes it worthwhile to purchase.
+4.  **Pricing:** According to the consumer, the product's price is reasonable given its qualities.
+
+### Recommendations
+-   _The PTron Intunes should resolve the technical problems and create a universally applicable design. 
+-   _For the benefit of customers seeking a premium appearance, they may also bring another product under this name.
+
 ***
+
+# Data Analysis Details
 
 ## 1. Descriptive Analysis
 There are **14337** reviews in the dataset. _Table 1_ shows that the mean of ReviewStar is near to
@@ -69,7 +90,7 @@ The polarized words are impacted by valence shifters. The entire emotion of the 
 
 Around 31% of the time in this context, negators appear in sentences that contain polarized terms. However, only 17% of the time do adversarial conjunctions go together with polarized terms. If the valence shifters are ignored, the modelling of the document sentiments will suffer significantly which is reflected on Table 4.
 
-### 3.1 Identifying the Outliers
+### 3.2 Identifying the Outliers
 
 Despite having an accuracy rating of up to 82%, sentimentr jockers made neutral predictions 770 times when it was unable to make a positive or negative prediction. These represent sentimentr jockers model outliers. Then, the outliers that are common to all the packages and lexicons are discovered and provided in Appendix A. 162 observations fit the neutral prediction. A few intriguing conclusions can be gained by analyzing each of these documents separately. They are: 
 1.	Spelling mistake (goog, gud) 
@@ -81,6 +102,8 @@ Despite having an accuracy rating of up to 82%, sentimentr jockers made neutral 
 ![](Table6.1_outliers.png)
 ![](Table6.2_outliers.png)
 
+### 3.3 Confusion Matix (accuracy measurement)
+
 In order to recalibrate the sentimentr jockers model's accuracy, which is 87%, the outliers (neutral replies) are deleted. The model accurately recognized 8185 out of the 8916 (91.8%) positive reviews and 2311 out of the 3148 (73.4%) negative reviews. In total, 10496 out of the 12,064 (87%) were correctly labelled (Figure 1).
 
 ![](Figure1_FinalConfusionmatrix.png)
@@ -88,6 +111,7 @@ In order to recalibrate the sentimentr jockers model's accuracy, which is 87%, t
 
 
 ## 4. Data Transformation for Topic modelling
+
 Instead of choosing all observations, the PTron Intunes product is chosen for further analysis. The LSA model only uses 208 of the 12,064 tagged documents as input. Before using LSA, some pre-processing is done after choosing the specific portion of the dataset.Pre-processing steps are: 
 1.	Transforming everything to lower-case letter,
 2.	Removing white spaces,
@@ -97,8 +121,15 @@ Instead of choosing all observations, the PTron Intunes product is chosen for fu
 6.	Performing Stemming
 
 
-## Modeling 
+Latent Topics for Negative Reviews (PTron Intunes product)
+The negative reviews (43 documents) are separated from 208 observations. Term document matrix is created using n-grams (1-3). There were only 1425 terms thus sparse terms are not removed. Weighted document-term matrix is calculated and LSA model is run on it. In Table 6, top 20 terms for each topic are represented. Based on the analysis 4 topics for the negative reviews are: noise_cancellation, fittings_technology, deliverytime and material. However, one significant thing to notice for these topics is the topic noise_cancellation these terms values are negative. This might be an important factor for positive reviews.
 
-## Data Analysis &
+![](Table7_Negativefactors.png)
 
-## Findings & Recommendations 
+Latent Topics for Positive Reviews (PTron Intunes product)
+The positive reviews (165 documents) are separated from 208 observations. Term document matrix is created using n-grams (1-3). There were 5177 terms thus sparse terms are removed and only 560 terms are selected. Weighted document-term matrix is calculated and LSA model is run on it. In Table 8, top 20 terms for each topic are represented. Based on the analysis 4 topics for the positive reviews are: soundquality, lightweight, noisecan_batterylife and price. This provides evidence for the assumption based on Table 7.
+
+![](Table8_Positivefactors.png)
+
+
+
