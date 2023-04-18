@@ -120,6 +120,8 @@ Instead of choosing all observations, the PTron Intunes product is chosen for fu
 5.	Removing Stopwords,
 6.	Performing Stemming
 
+![](Figure2_datatransformation.png)
+
 
 Latent Topics for Negative Reviews (PTron Intunes product)
 The negative reviews (43 documents) are separated from 208 observations. Term document matrix is created using n-grams (1-3). There were only 1425 terms thus sparse terms are not removed. Weighted document-term matrix is calculated and LSA model is run on it. In Table 6, top 20 terms for each topic are represented. Based on the analysis 4 topics for the negative reviews are: noise_cancellation, fittings_technology, deliverytime and material. However, one significant thing to notice for these topics is the topic noise_cancellation these terms values are negative. This might be an important factor for positive reviews.
