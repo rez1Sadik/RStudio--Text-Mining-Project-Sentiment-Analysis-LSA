@@ -1,2 +1,2 @@
-# The Anatomy of Amazon Earphone Consumer Reviews
-![](Intro_image.png)
+# Text Mining Project on: 
+![](Intro_Image.png)
