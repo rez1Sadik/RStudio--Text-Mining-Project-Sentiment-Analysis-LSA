@@ -44,6 +44,19 @@ There are **14337** reviews in the dataset. _Table 1_ shows that the mean of Rev
 
 ![](Table1_InitialSummary.png)
 
+It appears that there are more positive reviews than negative ones, however the dataset does not follow the normal data trend. 
+In support of our hypothesis based on Table 1, Table 2 shows the supporting data.
+
+![](Table2_ReviewStarCount.png)
+
+## 2. Labelling the data
+-   The 3-stars observations are removed from the dataset
+-   Marked the 4 and 5-stars observation as _positive_ and 1 and 2-stars observations as _negative_.
+
+![](Table3_Countofreviews.png)
+
+## 3. Sentiment Analysis
+Sentiment analysis is run on the raw dataset to figure out the best lexicon to measure sentiment accuracy for the dataset so that we can convert the data from unlabelled to labelled one. For the sentiment analysis __3 different package__ (_sentimentr, meanr, syuzhet_) and __7 lexicons__ (_hu_liu, sentiword, jockers, bing, afinn, nrc and syuzhet_) were used. Individual consumer review is counted as an individual document for the sentiment analysis.  
 
 
 ## 4. Data Transformation for Topic modelling
