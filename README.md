@@ -11,9 +11,11 @@ The aim of this project is to exhibit my text mining skills on _Amazon Earphone 
 
 ## Problem Statement
 
+
 ## Skills Demonstrated 
 
 ## Data Sourcing 
+I have used the data available at Kaggle website (_[Amazon Earphones Reviews, 2019](https://www.kaggle.com/datasets/shitalkat/amazonearphonesreviews)_). The dataset fulfils the requirements for the project and is in the CSV format.
 
 ## Data Transformation
 
