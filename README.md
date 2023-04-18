@@ -22,7 +22,7 @@ The project issues are divided into 2 stages.
 
 **#2:** Figuring out the major factors for consumer sentiements by using topic modelling (**LSA**).
 
-## Concepts/Skills Demonstrated 
+## Data Analysis Concepts/Skills Demonstrated 
 
 1.  Descriptive Analysis
 2.  Labelling the data
@@ -36,11 +36,16 @@ The project issues are divided into 2 stages.
     - N-grams
     - Weighted document-term matrix
     - Applied Latent Semantic Analysis (LSA)
+***
+
+## 1. Descriptive Analysis
+There are **14337** reviews in the dataset. _Table 1_ shows that the mean of ReviewStar is near to
+**4(3.67)**, which indicates that most customers are content with the product.
+![](Table 1_ Initial Summary.png)
 
 
 
-
-## Data Transformation
+## 4. Data Transformation for Topic modelling
 
 ## Modeling 
 
