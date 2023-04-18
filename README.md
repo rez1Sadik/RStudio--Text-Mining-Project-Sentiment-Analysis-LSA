@@ -35,9 +35,10 @@ The project issues are divided into 2 stages.
     - Term document matrix
     - N-grams
     - Weighted document-term matrix
-    - Applied Latent Semantic Analysis (LSA)
+    - Latent Semantic Analysis (LSA)
 
 ## Findings & Recommendations 
+
 ### Findings
 The study shows the factors for consumer dissatisfaction are:
 1.  **Fittings & Tech issues:** The product is not the kind of product that will fit for everyone, and consumers have higher expectations in terms of technology (Bluetooth) support.
@@ -102,7 +103,7 @@ Despite having an accuracy rating of up to 82%, sentimentr jockers made neutral 
 ![](Table6.1_outliers.png)
 ![](Table6.2_outliers.png)
 
-### 3.3 Confusion Matix (accuracy measurement)
+### 3.3 Confusion Matrix (accuracy measurement)
 
 In order to recalibrate the sentimentr jockers model's accuracy, which is 87%, the outliers (neutral replies) are deleted. The model accurately recognized 8185 out of the 8916 (91.8%) positive reviews and 2311 out of the 3148 (73.4%) negative reviews. In total, 10496 out of the 12,064 (87%) were correctly labelled (Figure 1).
 
