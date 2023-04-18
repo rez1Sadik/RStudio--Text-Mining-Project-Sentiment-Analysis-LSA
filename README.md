@@ -10,12 +10,14 @@ The aim of this project is to exhibit my text mining skills on _Amazon Earphone 
 
 
 ## Problem Statement
-
-
-## Skills Demonstrated 
+**PTron Intunes** wants to investigate the major factors influencing customers' delight and disappointment with their product (_earphones_) to stay competitive. 
 
 ## Data Sourcing 
 I have used the data available at Kaggle website (_[Amazon Earphones Reviews, 2019](https://www.kaggle.com/datasets/shitalkat/amazonearphonesreviews)_). The dataset fulfils the requirements for the project and is in the CSV format.
+
+## Skills Demonstrated 
+
+
 
 ## Data Transformation
 
