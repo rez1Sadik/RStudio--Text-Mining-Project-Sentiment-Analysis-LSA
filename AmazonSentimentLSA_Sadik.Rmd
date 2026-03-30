@@ -1,0 +1,267 @@
+---
+title: "Amazon Reviews Sentiment Analysis Lexicon Comparison"
+author: "MRSadik"
+date: "2026-03-29"
+
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
+    highlight: tango
+---
+
+
+
+
+## Section 1: Load and Prepare Data
+This section clears the environment, loads the dataset, and maps the 5-star rating system to binary sentiment labels, excluding neutral (3-star) reviews.
+
+
+```{r step1, include=TRUE}
+# Global options for the document
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 10)
+
+
+# Load required libraries
+library(syuzhet)
+library(sentimentr)
+library(meanr)
+library(paletteer)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(forcats)
+library(mltools)
+
+# Clear workspace
+rm(list = ls())
+
+# Load data using your specific Mac file path
+data <- read.csv("/Users/rezwanesadik/Documents/DeskTop Old/Conference/AllProductReviews.csv", header = TRUE)    
+# read.csv(file.choose(), header = TRUE)
+
+
+
+# Prepare labels: 1,2 -> Negative; 4,5 -> Positive; 3 -> Excluded
+data$label <- factor(data$ReviewStar, 
+                     levels = c(1, 2, 4, 5), 
+                     exclude = 3, 
+                     labels = c("Negative", "Negative", "Positive", "Positive"))
+
+# Remove empty reviews and NAs
+data_amazon <- na.omit(data[data$ReviewBody != "" & !is.na(data$ReviewBody), ])
+
+# Preview data
+head(data_amazon)
+
+
+```
+
+
+
+## Section 2: Sentiment Analysis Scoring
+We apply 11 different lexicon methods to calculate sentiment scores. These are then discretized into "Positive", "Negative", or "Neutral" based on their numerical value.
+
+```{r step2, include=TRUE}
+# Global options for the document
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 10)
+
+afinn <- as_key(syuzhet:::afinn)
+
+# Calculate sentiment scores across multiple lexicons
+out1 <- data.frame(
+  data_amazon,
+  sentimentr_hu_liu = sentiment_by(data_amazon$ReviewBody, polarity_dt = lexicon::hash_sentiment_huliu, question.weight = 0)[["ave_sentiment"]],
+  sentimentr_sentiword = sentiment_by(data_amazon$ReviewBody, polarity_dt = lexicon::hash_sentiment_sentiword, question.weight = 0)[["ave_sentiment"]],
+  sentimentr_jockers = sentiment_by(data_amazon$ReviewBody, polarity_dt = lexicon::hash_sentiment_jockers, question.weight = 0)[["ave_sentiment"]],
+  sentimentr_afinn = sentiment_by(data_amazon$ReviewBody, polarity_dt = afinn, question.weight = 0)[["ave_sentiment"]],
+  sentimentr_nrc = sentiment_by(data_amazon$ReviewBody, polarity_dt = lexicon::hash_sentiment_nrc, question.weight = 0)[["ave_sentiment"]],
+  sentimentr_loughran_mcdonald = sentiment_by(data_amazon$ReviewBody, polarity_dt = lexicon::hash_sentiment_loughran_mcdonald, question.weight = 0)[["ave_sentiment"]],
+  meanr = meanr::score(data_amazon$ReviewBody)$score,
+  syuzhet_ = setNames(as.data.frame(lapply(c("syuzhet", "bing", "afinn", "nrc"),
+                                           function(x) get_sentiment(data_amazon$ReviewBody, method=x))),
+                      paste0("", c("syuzhet", "bing", "afinn", "nrc"))),
+  stringsAsFactors = FALSE
+)
+
+# Isolate the 11 lexicon score columns
+lexicon_cols <- c("sentimentr_hu_liu", "sentimentr_sentiword", "sentimentr_jockers", 
+                  "sentimentr_afinn", "sentimentr_nrc", "sentimentr_loughran_mcdonald", 
+                  "meanr", "syuzhet_.syuzhet", "syuzhet_.bing", "syuzhet_.afinn", "syuzhet_.nrc")
+
+out <- out1[, lexicon_cols]
+
+# Map numerical scores to discrete labels
+out[out > 0] <- "Positive"
+out[out < 0] <- "Negative"
+out[out == 0 ] <- "Neutral"
+
+# Append text and true labels
+out$text <- out1$ReviewBody
+out$label <- out1$label
+
+knitr::kable(head(out[,1:5]), caption = "Sample of Categorized Sentiment Scores")
+
+```
+
+
+
+## Section 3: Accuracy Calculation
+We compare the predicted labels from each lexicon against the original star-rating labels to determine which lexicon performs best.
+
+
+```{r step3, include=TRUE}
+# Global options for the document
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 10)
+
+reference <- out$label
+
+# Define accuracy function
+calculate_accuracy <- function(predicted, reference, lexicon_name) {
+  u <- union(predicted, reference)
+  t <- table(factor(predicted, u), factor(reference, u))
+  accuracy <- tryCatch(confusionMatrix(t)$overall[1], error = function(e) NA)
+  data.frame(Lexicon = lexicon_name, Accuracy = accuracy)
+}
+
+# Calculate accuracy for all lexicons
+df_results <- data.frame(Lexicon = character(), Accuracy = numeric())
+for (lexicon in lexicon_cols) {
+  predicted <- out[[lexicon]]
+  accuracy_df <- calculate_accuracy(predicted, reference, lexicon)
+  df_results <- bind_rows(df_results, accuracy_df)
+}
+
+# Sort results
+sorted_df <- df_results[order(df_results$Accuracy, decreasing = TRUE), ]
+knitr::kable(sorted_df, digits = 3, caption = "Lexicon Accuracy Rankings")
+
+
+
+```
+
+
+
+
+## Section 4: Accuracy Visualization
+A comparison of the accuracy rates across all tested lexicons.
+
+```{r step4, include=TRUE}
+# Global options for the document
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 10)
+
+# Plot results
+ggplot(sorted_df, aes(fct_reorder(Lexicon, Accuracy), Accuracy, fill = Lexicon)) +
+  scale_fill_brewer(palette = "Paired", type = "qual") + 
+  geom_col() +
+  geom_text(aes(label = sprintf("%.1f%%", Accuracy * 100)), vjust = 0.5, hjust = 1.1, size = 4, color = "black", fontface = "bold") +
+  labs(x = "Lexicon", y = "Accuracy", title = "Lexicon Based Sentiment Accuracy Comparison") +
+  theme_minimal() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  coord_flip()
+
+```
+
+## Section 5: Valence Shifter Analysis
+In this section, we analyze how valence shifters (negators, amplifiers, de-amplifiers, and adversative conjunctions) affect the sentiment of the Amazon reviews.
+
+```{r step5, include=TRUE}
+# Global options for the document
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 10)
+
+library(stringr)
+library(lexicon)
+library(knitr)
+library(kableExtra)
+
+# 1. Prepare text for manual extraction
+text_clean <- tolower(as.character(out$text))
+text_clean <- text_clean[!is.na(text_clean)]
+
+# 2. Load valence shifter dictionary
+shifters <- lexicon::hash_valence_shifters
+
+# 3. Build exact word boundary regex patterns for each shifter type
+regex_neg <- paste0("\\b(", paste(shifters$x[shifters$y == 1], collapse = "|"), ")\\b")
+regex_amp <- paste0("\\b(", paste(shifters$x[shifters$y == 2], collapse = "|"), ")\\b")
+regex_deamp <- paste0("\\b(", paste(shifters$x[shifters$y == 3], collapse = "|"), ")\\b")
+regex_adv <- paste0("\\b(", paste(shifters$x[shifters$y == 4], collapse = "|"), ")\\b")
+
+# 4. Count how many reviews contain at least one of each shifter type
+count_neg <- sum(str_detect(text_clean, regex_neg))
+count_amp <- sum(str_detect(text_clean, regex_amp))
+count_deamp <- sum(str_detect(text_clean, regex_deamp))
+count_adv <- sum(str_detect(text_clean, regex_adv))
+
+total_reviews <- length(text_clean)
+
+# 5. Calculate percentages relative to the total number of reviews
+pct_neg <- paste0(round((count_neg / total_reviews) * 100), "%")
+pct_amp <- paste0(round((count_amp / total_reviews) * 100), "%")
+pct_deamp <- paste0(round((count_deamp / total_reviews) * 100), "%")
+pct_adv <- paste0(round((count_adv / total_reviews) * 100), "%")
+
+# 6. Construct the formatted dataframe
+valance_table <- data.frame(
+  Text = "Amazon_Reviews",
+  Negator = pct_neg,
+  Amplifier = pct_amp,
+  Deamplifier = pct_deamp,
+  Adversative = pct_adv,
+  stringsAsFactors = FALSE
+)
+
+
+# 7. Render the styled table to match specifications
+kable(valance_table, align = "c", caption = "Table 5: Valance Shifters output of the dataset.") %>%
+  kable_styling(bootstrap_options = "bordered", full_width = FALSE, position = "center", font_size = 14) %>%
+  row_spec(0, bold = TRUE, font_size = 14) %>%
+  column_spec(1, bold = TRUE, italic = TRUE) %>%
+  column_spec(2, background = "#FCE4D6", bold = TRUE) %>%
+  column_spec(3, background = "#E2EFDA", bold = TRUE) %>%
+  column_spec(4, background = "#F2F2F2", bold = TRUE) %>%
+  column_spec(5, background = "#DDEBF7", bold = TRUE)
+
+
+
+
+
+```
+
+## Section 6: Error Analysis and Confusion Matrix
+We isolate the predictions of the Jockers lexicon, filtering out common ambiguous (Neutral) predictions to assess its binary classification capabilities via a confusion matrix and Matthews correlation coefficient (MCC).
+
+
+```{r step6, include=TRUE}
+# Filter for reviews predicted as Neutral by all key lexicons
+common_neutral_reviews <- out %>%
+  filter(
+    sentimentr_jockers == "Neutral" & syuzhet_.afinn == "Neutral" &
+    sentimentr_hu_liu == "Neutral" & sentimentr_sentiword == "Neutral" &
+    sentimentr_loughran_mcdonald == "Neutral" & sentimentr_afinn == "Neutral" &
+    sentimentr_nrc == "Neutral" & meanr == "Neutral" &
+    syuzhet_.syuzhet == "Neutral" & syuzhet_.bing == "Neutral" &
+    syuzhet_.nrc == "Neutral"
+  )
+
+# Remove the common neutral reviews for binary evaluation
+final_out <- out[!(out$text %in% common_neutral_reviews$text), ]
+
+predicted_j <- factor(final_out$sentimentr_jockers, levels = c("Negative", "Positive"))
+reference_j <- factor(final_out$label, levels = c("Negative", "Positive"))
+
+# Create 2x2 confusion matrix
+conf_matrix_ <- table(predicted_j, reference_j)
+
+# Visualize confusion matrix
+fourfoldplot(conf_matrix_, color = c("pink", "lightblue"), conf.level = 0, margin = 1, main = "Jockers Lexicon Confusion Matrix")
+
+# Calculate Matthews Correlation Coefficient (MCC)
+mcc_value <- mcc(TN=conf_matrix_[1,1], TP=conf_matrix_[2,2], FP=conf_matrix_[1,2], FN=conf_matrix_[2,1])
+cat("Matthews Correlation Coefficient (MCC):", round(mcc_value, 4), "\n\n")
+
+# Detailed caret statistics
+confusionMatrix(predicted_j, reference_j)
+
+```
