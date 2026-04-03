@@ -2,6 +2,11 @@
 ![](readme_Image.png)
 ***
 
+## Full Analysis Report
+The complete data transformation, outlier detection, and topic modeling workflow can be viewed interactively here:
+  **[View the Full R Markdown HTML Report](https://rez1sadik.github.io/[your-repo-name]/Rscripts/AmazonSentimentLSA_Sadik.html)**
+
+
 ## Introduction
 
 Maintaining a competitive edge in the earphone market requires effective customer relations management, and customer feedback is crucial for business development and success.
