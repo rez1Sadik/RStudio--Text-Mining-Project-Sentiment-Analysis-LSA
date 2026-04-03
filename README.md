@@ -4,7 +4,7 @@
 
 ## Full Analysis Report
 The complete data transformation, outlier detection, and topic modeling workflow can be viewed interactively here:
-  **[View the Full R Markdown HTML Report](https://rez1sadik.github.io/[your-repo-name]/Rscripts/AmazonSentimentLSA_Sadik.html)**
+  **[View the Full R Markdown HTML Report](https://rez1sadik.github.io/NLP_Sentiment_LSA_R/Rscripts/AmazonSentimentLSA_Sadik.html)**
 
 
 ## Introduction
